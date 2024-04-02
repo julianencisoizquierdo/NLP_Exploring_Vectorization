@@ -79,7 +79,7 @@ We obtain a sparse matrix, where each row corresponds to a text review and each 
 
 Furthermore, we are interested in investigating whether lemmatization could help reduce the dimensionality and possibly improve the models’ performance. The same TF-IDF process is thus replicated on the review text data after lemmatization. The resulting vocabulary is 708.
 
-### Choice of Models and Evaluation Metrics
+### Algorithm Choice and Evaluation Metrics
 
 For each vectorization technique, two models are trained: a Ridge Regression and a random forest classifier. Several factors are considered in choosing our models.
 
