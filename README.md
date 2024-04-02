@@ -112,8 +112,6 @@ To run the analysis, open the `NLP_BI_Airline_Industry.ipynb` notebook and execu
 The following libraries are used in different parts of the project. Proceed to their installation with the following code:
 
 ```
-## Libraries Used
-
 ### General-purpose Libraries:
 import pandas as pd
 import numpy as np
@@ -177,5 +175,5 @@ This project is not open-source, and it does not come with a specific open-sourc
 If you are interested in using or collaborating on this project, please send me an email to julian.enciso.izquierdo@gmail.com.
 
 ## Acknowledgments
-Special thanks to Jade, Julie, Abir and Aya for their collaboration.
+Special thanks to Abir and Aya for their collaboration.
 
