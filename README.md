@@ -1,30 +1,15 @@
 # Exploring Vectorization with Python
 
 ## Content of the project
-We are working for the customer service team of a company in the airline industry. Our overarching goal is to benchmark against the competition by analyzing their tweets. We are provided with the dataset (`airline.csv`) and are tasked to answer the following four questions:
-1) What is the average length of a social customer service reply?
-2) What type of links were referenced most often? URL links, phone numbers or direct messages?
-3) How many people should be on a social media customer service team? 
-4) How many social replies are reasonable for a customer service representative to handle?
+We are analyzing an “Amazon Customer Reviews” dataset. This includes a large and varied text content, which makes it a perfect fit for sentiment analysis. However, this requires converting unstructured text into a format for machine learning, known as vectorization, which can be very challenging.
+
+For this, we are using various vectorization methods like Bag of Words with TF-IDF, embeddings with FastText and topic modeling with TDA. We will then compare to choose the most appropriate and performant method for our analysis.
+
+The aim of the analysis is to understand how different vectorization techniques and preprocessing methods impact sentiment classification models.
 
 
 ## Instructions
 The main file used for the analysis is `airline.csv`. It contains the text of the tweet, as well as information about the days in which those tweets were written.
-
-
-## Rationale and Methodology
-
-
-
-In this case, we are analyzing an “Amazon Customer Reviews” dataset, which includes a large and varied text content, making it a perfect fit for sentiment analysis. However, this requires converting unstructured text into a format for machine learning, known as vectorization, which can be very challenging. For this, we are using various vectorization methods like Bag of Words with TF-IDF, embeddings with FastText and topic modeling with TDA that we will then compare to choose the most appropriate and performant method for our analysis.
-
-For some cases, we use text preprocessing, lemmatization in our case, that also affects data analysis, as it is helpful in reducing word form variability.
-
-The aim of our analysis is to understand how different vectorization techniques and preprocessing methods impact sentiment classification models using the Amazon Customer Reviews dataset.
-
-## Methodology 
-
-## Data Overview 
 
 The dataset is composed of different column, mainly: 
 
@@ -33,6 +18,15 @@ Review Text: This column contains the full text of the customers reviews. It is 
 Overall Rating: Accompanying each review is a star rating, ranging from 1 to 5, found in the "overall" column. This rating is a quantitative reflection of the customer's satisfaction with the product. We define reviews with star ratings of 4 or 5 as positive representation of the high satisfaction of the client with the product, and ratings of 1 or 2 as a negative representation showing the client’s dissatisfaction with the product. The plot shows the count of the reviews.
 
 
+
+
+## Rationale and Methodology
+
+
+
+## Methodology 
+
+## Data Overview 
 
 We convert the ratings to a binary representation, where “1” and ”2” ratings from the overall columns are stored as 0, to represent the negative sentiment of the client and “4” and ”5” are stored as 1, representing the positive sentiment of the client. This new variable is stored in the sentiment column, that is our target variable. The resulting class counts appear to be relatively balanced, with 150,000 counts for positive sentiment and 144,240 counts for negative sentiment. 
 
