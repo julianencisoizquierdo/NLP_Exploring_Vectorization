@@ -104,7 +104,7 @@ Overall, the analysis illustrates that vectorization significantly influences th
 
 ## Usage
 
-To run the analysis, open the `NLP_BI_Airline_Industry.ipynb` notebook and execute each cell sequentially. Ensure that the required datasets are in the correct file paths.
+To run the analysis, open the `NLP_Exploration_Vectorization.ipynb` notebook and execute each cell sequentially. Ensure that the required datasets are in the correct file paths.
 
 
 ## Dependencies
