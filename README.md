@@ -9,32 +9,22 @@ The aim of the analysis is to understand how different vectorization techniques 
 
 
 ## Instructions
-The main file used for the analysis is `airline.csv`. It contains the text of the tweet, as well as information about the days in which those tweets were written.
-
-The dataset is composed of different column, mainly: 
-
-Review Text: This column contains the full text of the customers reviews. It is an all-inclusive field that includes the reviewer's experience, feedback on the product. It presents a rich resource for NLP applications, serving as our foundation for sentiment analysis.
-
-Overall Rating: Accompanying each review is a star rating, ranging from 1 to 5, found in the "overall" column. This rating is a quantitative reflection of the customer's satisfaction with the product. We define reviews with star ratings of 4 or 5 as positive representation of the high satisfaction of the client with the product, and ratings of 1 or 2 as a negative representation showing the client’s dissatisfaction with the product. The plot shows the count of the reviews.
-
-
+The main file used for the analysis is `reviews_5_balanced.json.gz`. It is composed of different columns, the most relevant being: 
+- Review Text: This column contains the full text of the customers reviews. It is an all-inclusive field that includes the reviewer's experience, feedback on the product.
+- Overall Rating: Accompanying each review is a star rating, ranging from 1 to 5, found in the "overall" column. This rating is a quantitative reflection of the customer's satisfaction with the product. We define reviews with star ratings of 4 or 5 as positive representation of the high satisfaction of the client with the product, and ratings of 1 or 2 as a negative representation showing the client’s dissatisfaction with the product. The plot shows the count of the reviews.
 
 
 ## Rationale and Methodology
 
-
-
-## Methodology 
-
-## Data Overview 
+### Feature Engineering
 
 We convert the ratings to a binary representation, where “1” and ”2” ratings from the overall columns are stored as 0, to represent the negative sentiment of the client and “4” and ”5” are stored as 1, representing the positive sentiment of the client. This new variable is stored in the sentiment column, that is our target variable. The resulting class counts appear to be relatively balanced, with 150,000 counts for positive sentiment and 144,240 counts for negative sentiment. 
 
 ### Data splitting
 
-Data splitting is performed before any preprocessing steps to avoid data leakage. Following the methodology outlined by Pinjosovsky (2023), all preprocessing steps performed on the training set are then replicated on the test set. 
+Data splitting is performed before any preprocessing steps to avoid data leakage. All preprocessing steps performed on the training set are then replicated on the test set.
 
-Adhering to best practices in machine learning methodology, 80% of our data, totaling 235,392 observations, are allocated for training and the remaining 20% are used to test the performance of the chosen machine learning models. 
+Adhering to best practices in machine learning methodology, 80% of our data, totaling 235,392 observations, are allocated for training, and the remaining 20% are used to test the performance of the chosen machine learning models.
 
 ### Data Preparation and Preprocessing
 
