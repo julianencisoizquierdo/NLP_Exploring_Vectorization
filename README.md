@@ -16,30 +16,26 @@ The main file used for the analysis is `reviews_5_balanced.json.gz`. It is compo
 
 ## Rationale and Methodology
 
-### Feature Engineering
-
-We convert the ratings to a binary representation, where “1” and ”2” ratings from the overall columns are stored as 0, to represent the negative sentiment of the client and “4” and ”5” are stored as 1, representing the positive sentiment of the client. This new variable is stored in the sentiment column, that is our target variable. The resulting class counts appear to be relatively balanced, with 150,000 counts for positive sentiment and 144,240 counts for negative sentiment. 
-
 ### Data splitting
 
 Data splitting is performed before any preprocessing steps to avoid data leakage. All preprocessing steps performed on the training set are then replicated on the test set.
 
 Adhering to best practices in machine learning methodology, 80% of our data, totaling 235,392 observations, are allocated for training, and the remaining 20% are used to test the performance of the chosen machine learning models.
 
-### Data Preparation and Preprocessing
+### Data Preparation and Preprocessing - Non-text columns
 
-The preprocessing is important to prepare the data set for further analysis and modeling. In this step, we perform preprocessing of non-text and text columns.
+Firstly, we convert the ratings to a binary representation, where “1” and ”2” ratings from the overall columns are stored as 0, to represent the negative sentiment of the client and “4” and ”5” are stored as 1, representing the positive sentiment of the client. This new variable is stored in the sentiment column, that is our target variable.
 
-#### Pre-processing non-text columns
+Additionally, we create a length variable. This will contain the character count of each review.
 
-First, we augment the features with a length variable that stores each review’s character count, which can be a useful indicator of the customer’s sentiment.  
+Moreover, we convert the ‘unixReviewTime’ column from its original format to a much more interpretable datetime format. This allows us to extract important information such as the year, the month and the day the review was done by the customer. 
 
-Moreover, we convert the ‘unixReviewTime’ column, that represents the time at which the review was left, from its original format to a much more interpretable datetime format. This allows us to extract important information such as the year, the month and the day the review was done by the customer. 
+Next, we convert the ‘verified’ feature (was the purchase verified or not) from its true/false original format to a binary format. Here ‘True’ is represented by 1 and ‘False’ is represented by 0.
 
-Next, we convert the ‘verified’ feature, that indicates if the purchase was verified or not, from its true/false original format to a binary format, where ‘True’ is represented by 1 and ‘False’ is represented by 0. This step is important to make the features set fitted for machine learning. 
-Finally, we decide to remove certain columns from the dataset to reduce complexity and improve the efficiency of our analysis. Specifically, we eliminate the ‘reviewTime,’  'summary', 'ReviewerID', and 'asin' columns. The 'summary' and ‘reviewTime’ columns are redundant as they contain information duplicated in other variables. Considering our focus on sentiment classification, the ‘ReviewerID’ and ‘asin’ (amazon product identification key) are judged unlikely to significantly contribute to the predictive power of our models. On the other hand, retaining them would have led to high dimensionality after one-hot encoding due to their numerous unique values, which would have increased computational complexity. 
+Finally, we decide to remove certain columns from the dataset to reduce complexity and improve the efficiency of our analysis. Specifically, we eliminate the ‘reviewTime,’  'summary', 'ReviewerID', and 'asin' columns. The 'summary' and ‘reviewTime’ columns are redundant as they contain information duplicated in other variables. The ‘ReviewerID’ and ‘asin’ (amazon product identification key) are probably not contributing significantly to the predictive power of our models. On the other hand, retaining them would have led to high dimensionality after one-hot encoding due to their numerous unique values. This would have increased computational complexity.
 
-#### Pre-processing the ‘reviewText’ column
+
+### Data Preparation and Preprocessing - ‘reviewText’ column
 
 The first step is to remove punctuation marks from the ‘reviewText’ column, in order to reduce noise and standardize the text format. This step is important to delete all the unnecessary characters and information from the text.
 
@@ -55,13 +51,13 @@ Since our goal is to compare the effect of vectorization techniques on model per
 
 #### Word Embeddings with FastText
 
-We initially set out to employ BERT embeddings, a contextual method which considers the information surrounding each word to generate embeddings. However, we encountered challenges related to the significant computational resources required. Compared to deep contextual embeddings, such as BERT, non-contextual embeddings (e.g. GloVe, FastText) require negligible time with minimal compromise in performance, particularly on tasks with large labeled data and simple language (Arora et al., 2020.) Considering this trade-off between performance and computational efficiency, we opt for the FastText algorithm.
+We initially set out to employ BERT embeddings, a contextual method which considers the information surrounding each word to generate embeddings. However, we encountered challenges related to the significant computational resources required. Compared to deep contextual embeddings, such as BERT, non-contextual embeddings (e.g. GloVe, FastText) require negligible time with minimal compromise in performance, particularly on tasks with large labeled data and simple language. Considering this trade-off between performance and computational efficiency, we opt for the FastText algorithm.
 
 We start by breaking down the text in the ‘reviewText’ column into tokens using the word_tokenize function from the Natural Language Toolkit library. These tokenized reviews are then used to train a FastText model, which transforms words into vectors, such that similar words are assigned closer values in the vector space. A vector size of 100 is set to allow for more nuanced representations while remaining computationally manageable. The minimum count parameter is set to 1, so that words with frequencies below this threshold are excluded from the vocabulary.
 
 After training the FastText model, we obtain dense vector representations for each word in the vocabulary. We then define a function (get_review_vector) to aggregate these word vectors into a single vector representation for each review. This process involves averaging the word vectors for all tokens present in the review text. If a token is not found in the FastText vocabulary, it is assigned a zero vector.
 
-Finally, we apply another aggregation function (aggregate_vectors) to transform each review vector into a single value corresponding to the mean of the word vectors across all tokens in the review. 
+Finally, we apply another aggregation function (aggregate_vectors) to transform each review vector into a single value corresponding to the mean of the word vectors across all tokens in the review.
 
 The final features in our training set are: verified, review_vectors, length, year, month, and day. 
 
@@ -69,7 +65,7 @@ The final features in our training set are: verified, review_vectors, length, ye
 
 We employ CountVectorizer to transform the textual data, removing stop words and excluding rare terms (min_df=0.001) and very common terms (max_df=0.95). The resulting count vectors are then used as input for Latent Dirichlet Allocation (LDA). Initially, the LDA model is configured with 10 components, a random state of 42 and it utilizes parallel processing for efficiency (n_jobs=-1).
 
-An overview of the 10 generated groups reveals a mixed quality of topics, with some groups displaying coherent themes while others seem less informative. For instance, Topic 03 includes a cluster of terms associated with negative sentiments, such as "cheap," "money," “bad,” "waste," and “never,” suggesting customer dissatisfaction. On the other hand, Topic 09 seems to capture positive sentiments, with terms like "good," "works," “nice,” and "great.” However, not all topics are as discernible. Topic 08, for example, exhibits less coherence, combining terms such as "broke" "get," "excellent" and “months”, from which we can hardly derive meaningful interpretations. 
+An overview of the 10 generated groups reveals a mixed quality of topics, with some groups displaying coherent themes while others seem less informative. For instance, Topic 03 includes a cluster of terms associated with negative sentiments, such as "cheap," "money," “bad,” "waste," and “never,” suggesting customer dissatisfaction. On the other hand, Topic 09 seems to capture positive sentiments, with terms like "good," "works," “nice,” and "great.” However, not all topics are as discernible. Topic 08, for example, exhibits less coherence, combining terms such as "broke" "get," "excellent" and “months”, from which we can hardly derive meaningful interpretations.
 
 To refine our topic modeling, we experiment with increasing the number of topics to 25. This adjustment yields a broader range of topics, still with varying degrees of coherence. For instance, Topic 03 in the 25-component model includes terms such as "return," and "broken," which differs from the terms observed in the 10-component model, but still indicates negative sentiment. However, many of the topics generated seem to combine terms more arbitrarily, such as topic 20 with the terms  “plastic,” “make,” “enough,” “lot,” and “hold.” The interpretability of these topics remains subjective, with some displaying clearer themes while others appear more ambiguous.
 
@@ -91,7 +87,9 @@ Firstly, computational efficiency plays a crucial role in our decision, given th
 
 In terms of explainability, ridge regression also offers the benefit of transparency with explicit coefficients for each feature allowing for a straightforward interpretation of its impact on the prediction. Random forest, on the other hand, is often considered a black-box due to its ensemble nature, but still offers some insights into feature importance through metrics such as Gini importance or mean decrease in impurity (Lee, 2017). 
 
-For both models, we choose to adhere to the default hyperparameters provided within the Scikit-learn library. The default settings often provide acceptable results without the need for extensive tuning and are chosen to provide a reasonable balance between bias and variance. This reduces the risk of overfitting, which is particularly important in our scenario given the high dimensionality of the feature space. For the ridge regression, a threshold of 0.5 is selected to convert probabilities into classifications. 
+For both models, we choose to adhere to the default hyperparameters provided within the Scikit-learn library. The default settings often provide acceptable results without the need for extensive tuning and are chosen to provide a reasonable balance between bias and variance. This reduces the risk of overfitting, which is particularly important in our scenario given the high dimensionality of the feature space. For the ridge regression, a threshold of 0.5 is selected to convert probabilities into classifications.
+
+### Model Evaluation and Comparison
 
 Finally, to evaluate and compare the models, a function is created to compute a series of performance metrics: accuracy, precision, recall, F1-score and the confusion matrix.
 
@@ -99,7 +97,7 @@ Our findings suggest that the use of TF-IDF vectorization generally provides the
 
 For both TF-IDF and FastText, the Ridge regression and the Random Forest perform rather similarly, with a slight advantage for Random Forest. On the other hand, results for LDA show more variability depending on the number of components and the model chosen. When using LDA with 10 topics, the Random Forest model significantly outperforms the Ridge regression, which suggests that Random Forest might be better at leveraging the thematic structures uncovered by LDA. Increasing the number of topics to 25 improves the Ridge model’s performance, but has the opposite effect of the random forest model. 
 
-Overall, the analysis illustrates that vectorization significantly influences the performance of classification models. The choice between different vectorization techniques and preprocessing steps (e.g., lemmatization vs. non-lemmatization) can lead to varied results in sentiment analysis. 
+Overall, the analysis illustrates that vectorization significantly influences the performance of classification models. The choice between different vectorization techniques and preprocessing steps (e.g., lemmatization vs. non-lemmatization) can lead to diverse results in sentiment analysis. 
 
 
 ## Usage
